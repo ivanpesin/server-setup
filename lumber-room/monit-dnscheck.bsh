@@ -1,0 +1,21 @@
+#!/bin/bash
+
+TMOUT="${TMOUT:=3}"
+HOST="${HOST:=fb.com}"
+DEBUG="${DEBUG:=}"
+
+if [ -z "$DEBUG" ]; then
+  /usr/bin/timeout $TMOUT /usr/bin/host $HOST &>/dev/null
+else
+  echo " >>> /usr/bin/timeout $TMOUT /usr/bin/host $HOST"
+  /usr/bin/timeout $TMOUT /usr/bin/host $HOST
+fi
+err=$?
+
+case $err in
+  0)   echo "OK: DNS resolution works";;
+  124) echo "FAIL: DNS resulution timed out";;
+  *)   echo "FAIL: DNS resolution failed with error: $err";;
+esac
+
+exit $err
