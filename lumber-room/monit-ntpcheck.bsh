@@ -3,9 +3,19 @@
 # Supports ntpd and chronyd
 #
 
+DEBUG="${DEBUG:=}"
+
 if [[ "$(pidof ntpd)" != "" && -x /usr/sbin/ntpq ]]; then
+  if [ ! -z "$DEBUG" ]; then
+     echo " >>> /usr/sbin/ntpq -p"
+     /usr/sbin/ntpq -p
+  fi
   COUNT=$(/usr/sbin/ntpq -p | /bin/awk 'NR>2&&$2!~/INIT/&&$3<3&&$8!=0{c++}END{c+=0;print c}')
 elif [[ "$(pidof chronyd)" != "" && -x /bin/chronyc ]]; then
+  if [ ! -z "$DEBUG" ]; then
+     echo " >>> /bin/chronyc sources -v"
+     /bin/chronyc sources -v
+  fi
   COUNT=$(/bin/chronyc sources | /bin/awk 'NR>3&&$1~/\^[*+-]/{c++}END{c+=0;print c}')
 else
   echo "FAIL: ntp daemon is not running or client not found"
