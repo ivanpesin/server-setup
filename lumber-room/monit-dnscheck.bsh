@@ -14,7 +14,7 @@ err=$?
 
 case $err in
   0)   echo "OK: DNS resolution works";;
-  124) echo "FAIL: DNS resulution timed out";;
+  124) echo "FAIL: DNS resolution timed out";;
   *)   echo "FAIL: DNS resolution failed with error: $err";;
 esac
 
