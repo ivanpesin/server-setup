@@ -1,11 +1,16 @@
 #!/bin/bash
 #
-# Supports ntpd
+# Supports ntpd and chronyd
 #
 
-if [ -x /usr/sbin/ntpq ]; then
+if [[ "$(pidof ntpd)" != "" && -x /usr/sbin/ntpq ]]; then
   COUNT=$(/usr/sbin/ntpq -p | /bin/awk 'NR>2&&$2!~/INIT/&&$3<3&&$8!=0{c++}END{c+=0;print c}')
-elif [ -x
+elif [[ "$(pidof chronyd)" != "" && -x /bin/chronyc ]]; then
+  COUNT=$(/bin/chronyc sources | /bin/awk 'NR>3&&$1~/\^[*+-]/{c++}END{c+=0;print c}')
+else
+  echo "FAIL: ntp daemon is not running or client not found"
+  exit 255
+fi
 
 if [ $COUNT -gt 0 ]; then
   echo "OK: reachable NTP servers: $COUNT"
