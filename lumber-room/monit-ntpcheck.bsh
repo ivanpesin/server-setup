@@ -1,0 +1,16 @@
+#!/bin/bash
+#
+# Supports ntpd
+#
+
+if [ -x /usr/sbin/ntpq ]; then
+  COUNT=$(/usr/sbin/ntpq -p | /bin/awk 'NR>2&&$2!~/INIT/&&$3<3&&$8!=0{c++}END{c+=0;print c}')
+elif [ -x
+
+if [ $COUNT -gt 0 ]; then
+  echo "OK: reachable NTP servers: $COUNT"
+  exit 0
+fi
+
+echo "FAIL: NO reachable NTP servers!"
+exit 1
